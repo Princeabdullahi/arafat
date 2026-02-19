@@ -1,7 +1,7 @@
-from database import SessionLocal
-from models import User
-from auth import hash_text, verify_text
-from ai import ask_ai
+from .database import SessionLocal
+from .models import User
+from .auth import hash_text, verify_text
+from .ai import ask_ai
 import requests
 import os
 
