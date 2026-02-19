@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from app.whatsapp import handle_user_message
-from database import Base, engine
+from app.database import Base, engine
 
 app = FastAPI()
 
