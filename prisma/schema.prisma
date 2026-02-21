@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum TransactionType {
+  AIRTIME
+  DATA
+}
+
+enum TransactionStatus {
+  SUCCESS
+  FAILED
+  PENDING
+}
+
+model User {
+  id            String   @id @default(cuid())
+  fullName      String
+  email         String   @unique
+  password      String
+  phoneNumber   String   @unique
+  walletBalance Float    @default(0)
+  role          Role     @default(USER)
+  createdAt     DateTime @default(now())
+
+  transactions  Transaction[]
+  sessions      Session[]
+}
+
+model Transaction {
+  id          String            @id @default(cuid())
+  userId      String
+  type        TransactionType
+  network     String
+  phoneNumber String
+  amount      Float
+  status      TransactionStatus @default(SUCCESS)
+  createdAt   DateTime          @default(now())
+
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  phoneNumber String  @unique
+  state      String
+  tempData   Json
+  isLoggedIn Boolean  @default(false)
+  userId     String?
+  createdAt  DateTime @default(now())
+
+  user       User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+}
